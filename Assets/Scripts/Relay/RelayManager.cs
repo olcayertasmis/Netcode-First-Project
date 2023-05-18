@@ -1,5 +1,7 @@
 using System;
 using TMPro;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Relay;
@@ -64,6 +66,11 @@ namespace Relay
             Debug.Log("Allocate Completed : " + _relayHostData.AllocationID);
 
             joinCodeText.text = _relayHostData.JoinCode;
+
+            UnityTransport unityTransport = NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>();
+
+            unityTransport.SetRelayServerData(_relayHostData.IpV4Adress, _relayHostData.Port, _relayHostData.AllocationIDBytes, _relayHostData.Key, _relayHostData.ConnectionData);
+            NetworkManager.Singleton.StartHost();
         }
 
         public async void OnJoinClick()
@@ -81,6 +88,11 @@ namespace Relay
                 HostConnectionData = joinAllocation.HostConnectionData,
                 Key = joinAllocation.Key
             };
+
+            UnityTransport unityTransport = NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>();
+
+            unityTransport.SetRelayServerData(_relayJoinData.IpV4Adress, _relayJoinData.Port, _relayJoinData.AllocationIDBytes, _relayJoinData.Key, _relayJoinData.ConnectionData, _relayJoinData.HostConnectionData);
+            NetworkManager.Singleton.StartClient();
         }
 
         private struct RelayHostData
