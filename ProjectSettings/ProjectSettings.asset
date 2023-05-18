@@ -798,11 +798,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 87d2182d-b9c3-46f2-9f98-3243ab7c5fa7
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: NetCodeFirst
+  organizationId: crazogi
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 
