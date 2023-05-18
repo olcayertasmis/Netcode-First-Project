@@ -5,20 +5,27 @@ using Unity.Services.Core;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Relay
 {
     public class RelayManager : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI idText;
+        //[Header("Other Compenents")]
 
-        [SerializeField] private TMP_Dropdown playerCount;
-
+        [Header("Player Variables")]
+        [SerializeField] private TextMeshProUGUI playerIdText;
         private string _playerId;
 
-        private RelayHostData _relayHostData;
-
+        [Header("Room Settings && Variables")]
+        [SerializeField] private TMP_Dropdown playerCount;
         private int _maxPlayerCount;
+        [SerializeField] private TMP_InputField joinInput;
+        [SerializeField] private TextMeshProUGUI joinCodeText;
+
+        [Header("Data Structs")]
+        private RelayHostData _relayHostData;
+        private RelayJoinData _relayJoinData;
 
         private async void Start()
         {
@@ -33,7 +40,7 @@ namespace Relay
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
             _playerId = AuthenticationService.Instance.PlayerId;
             Debug.Log("Signed in : " + _playerId);
-            idText.text = _playerId;
+            playerIdText.text = "Player ID : " + _playerId;
         }
 
         public async void OnHostClick()
@@ -44,7 +51,7 @@ namespace Relay
 
             _relayHostData = new RelayHostData()
             {
-                IPv4Adress = allocation.RelayServer.IpV4,
+                IpV4Adress = allocation.RelayServer.IpV4,
                 Port = (ushort)allocation.RelayServer.Port,
 
                 AllocationID = allocation.AllocationId,
@@ -52,18 +59,49 @@ namespace Relay
                 ConnectionData = allocation.ConnectionData,
                 Key = allocation.Key
             };
+            _relayHostData.JoinCode = await RelayService.Instance.GetJoinCodeAsync(_relayHostData.AllocationID);
 
             Debug.Log("Allocate Completed : " + _relayHostData.AllocationID);
+
+            joinCodeText.text = _relayHostData.JoinCode;
         }
 
-        public struct RelayHostData
+        public async void OnJoinClick()
+        {
+            JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinInput.text);
+
+            _relayJoinData = new RelayJoinData()
+            {
+                IpV4Adress = joinAllocation.RelayServer.IpV4,
+                Port = (ushort)joinAllocation.RelayServer.Port,
+
+                AllocationID = joinAllocation.AllocationId,
+                AllocationIDBytes = joinAllocation.AllocationIdBytes,
+                ConnectionData = joinAllocation.ConnectionData,
+                HostConnectionData = joinAllocation.HostConnectionData,
+                Key = joinAllocation.Key
+            };
+        }
+
+        private struct RelayHostData
         {
             public string JoinCode;
-            public string IPv4Adress;
+            public string IpV4Adress;
             public ushort Port;
             public Guid AllocationID;
             public byte[] AllocationIDBytes;
             public byte[] ConnectionData;
+            public byte[] Key;
+        }
+
+        private struct RelayJoinData
+        {
+            public string IpV4Adress;
+            public ushort Port;
+            public Guid AllocationID;
+            public byte[] AllocationIDBytes;
+            public byte[] ConnectionData;
+            public byte[] HostConnectionData;
             public byte[] Key;
         }
     }
