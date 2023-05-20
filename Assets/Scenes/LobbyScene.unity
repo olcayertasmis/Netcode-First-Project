@@ -1071,6 +1071,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec28bcec11fb67f48925da66630487a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonsContainer: {fileID: 747920490}
+  buttonPrefab: {fileID: 3631809528577417453, guid: a195816de0fe8d8459ba53838b6a396e, type: 3}
 --- !u!114 &149534491
 MonoBehaviour:
   m_ObjectHideFlags: 0
