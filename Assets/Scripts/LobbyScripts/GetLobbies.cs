@@ -48,7 +48,7 @@ namespace LobbyScripts
 
                 foreach (var availableLobby in lobbies.Results)
                 {
-                    Debug.Log("Lobby Name : " + availableLobby.Name + "\n" + "Lobby Created Time : " + availableLobby.Created);
+                    LobbyStatic.LogLobby(availableLobby);
                 }
 
                 //...

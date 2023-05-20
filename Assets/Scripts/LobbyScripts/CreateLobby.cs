@@ -14,6 +14,7 @@ namespace LobbyScripts
     {
         [SerializeField] private TMP_InputField lobbyName;
         [SerializeField] private TMP_Dropdown maxPlayer;
+        [SerializeField] private TMP_Dropdown gameMode;
         [SerializeField] private Toggle isLobbyPrivate;
         [SerializeField] private TMP_Text joinCodeText;
 
@@ -24,10 +25,17 @@ namespace LobbyScripts
             CreateLobbyOptions options = new CreateLobbyOptions();
             options.IsPrivate = isLobbyPrivate.isOn;
 
+            // Player Creation
             options.Player = new Player(AuthenticationService.Instance.PlayerId);
             options.Player.Data = new Dictionary<string, PlayerDataObject>()
             {
                 { "PlayerLevel", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "5") }
+            };
+
+            // Lobby Data
+            options.Data = new Dictionary<string, DataObject>()
+            {
+                { "GameMode", new DataObject(DataObject.VisibilityOptions.Public, gameMode.options[gameMode.value].text, DataObject.IndexOptions.S1) }
             };
 
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(_lobbyName, _maxPlayerCount, options);
@@ -35,6 +43,7 @@ namespace LobbyScripts
             Debug.Log("Create Lobby Done!");
 
             LobbyStatic.LogPlayersInLobby(lobby);
+            LobbyStatic.LogLobby(lobby);
 
             joinCodeText.text = lobby.LobbyCode;
 

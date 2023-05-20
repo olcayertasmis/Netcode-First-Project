@@ -13,5 +13,10 @@ namespace LobbyScripts
                 Debug.Log("Player Level : " + player.Data["PlayerLevel"].Value);
             }
         }
+
+        public static void LogLobby(Lobby lobby)
+        {
+            Debug.Log("Lobby ID : " + lobby.Id + "\n" + "GameMode = " + lobby.Data["GameMode"].Value);
+        }
     }
 }
