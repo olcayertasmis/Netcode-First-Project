@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using Unity.Services.Lobbies;
 using UnityEngine;
@@ -12,6 +14,7 @@ namespace LobbyScripts
         [SerializeField] private TMP_InputField lobbyName;
         [SerializeField] private TMP_Dropdown maxPlayer;
         [SerializeField] private Toggle isLobbyPrivate;
+        [SerializeField] private TMP_Text joinCodeText;
 
         public async void CreateLobbyMethod()
         {
@@ -22,6 +25,22 @@ namespace LobbyScripts
 
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(_lobbyName, _maxPlayerCount, options);
             DontDestroyOnLoad(this);
+            Debug.Log("Create Lobby Done!");
+
+            joinCodeText.text = lobby.LobbyCode;
+
+            StartCoroutine(HeartbeatLobbyCorotine(lobby.Id, 15f));
+        }
+
+        IEnumerator HeartbeatLobbyCorotine(string lobbyID, float waitTimeSeconds)
+        {
+            var delay = new WaitForSeconds(waitTimeSeconds);
+
+            while (true)
+            {
+                LobbyService.Instance.SendHeartbeatPingAsync(lobbyID);
+                yield return delay;
+            }
         }
     }
 }
