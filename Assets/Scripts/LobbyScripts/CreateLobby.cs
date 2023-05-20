@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,9 +24,17 @@ namespace LobbyScripts
             CreateLobbyOptions options = new CreateLobbyOptions();
             options.IsPrivate = isLobbyPrivate.isOn;
 
+            options.Player = new Player(AuthenticationService.Instance.PlayerId);
+            options.Player.Data = new Dictionary<string, PlayerDataObject>()
+            {
+                { "PlayerLevel", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "5") }
+            };
+
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(_lobbyName, _maxPlayerCount, options);
             DontDestroyOnLoad(this);
             Debug.Log("Create Lobby Done!");
+
+            LobbyStatic.LogPlayersInLobby(lobby);
 
             joinCodeText.text = lobby.LobbyCode;
 
