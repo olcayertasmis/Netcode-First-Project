@@ -895,11 +895,11 @@ RectTransform:
   m_Father: {fileID: 1398030005}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 856.2122, y: 830.9058}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 1060.612, y: 847.51}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1496605389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1105,3 +1105,5 @@ MonoBehaviour:
   lobbyName: {fileID: 1270463879}
   lobbyCode: {fileID: 688313920}
   gameMode: {fileID: 866126393}
+  playerInfoPanel: {fileID: 1496605387}
+  playerInfoPrefab: {fileID: 8523735825611089797, guid: 35f7b24ceb4910a488cecadd6307fb31, type: 3}
