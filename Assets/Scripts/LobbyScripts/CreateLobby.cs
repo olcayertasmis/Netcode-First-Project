@@ -39,6 +39,7 @@ namespace LobbyScripts
             };
 
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(_lobbyName, _maxPlayerCount, options);
+            GetComponent<CurrentLobby>().currentLobby = lobby;
             DontDestroyOnLoad(this);
             Debug.Log("Create Lobby Done!");
 
@@ -48,6 +49,8 @@ namespace LobbyScripts
             joinCodeText.text = lobby.LobbyCode;
 
             StartCoroutine(HeartbeatLobbyCorotine(lobby.Id, 15f));
+
+            LobbyStatic.LoadLobbyRoom();
         }
 
         IEnumerator HeartbeatLobbyCorotine(string lobbyID, float waitTimeSeconds)

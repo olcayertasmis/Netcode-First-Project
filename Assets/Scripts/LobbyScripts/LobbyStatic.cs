@@ -1,5 +1,6 @@
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace LobbyScripts
 {
@@ -17,6 +18,11 @@ namespace LobbyScripts
         public static void LogLobby(Lobby lobby)
         {
             Debug.Log("Lobby ID : " + lobby.Id + "\n" + "GameMode = " + lobby.Data["GameMode"].Value);
+        }
+
+        public static void LoadLobbyRoom()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
 }

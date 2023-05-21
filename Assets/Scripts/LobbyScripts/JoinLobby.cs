@@ -29,7 +29,11 @@ namespace LobbyScripts
                 Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(code, options);
                 Debug.Log("Joined Lobby With Code : " + code);
 
+                DontDestroyOnLoad(this);
+                GetComponent<CurrentLobby>().currentLobby = lobby;
                 LobbyStatic.LogPlayersInLobby(lobby);
+
+                LobbyStatic.LoadLobbyRoom();
             }
             catch (LobbyServiceException e)
             {
@@ -41,9 +45,22 @@ namespace LobbyScripts
         {
             try
             {
-                Lobby lobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobbyID);
+                JoinLobbyByIdOptions options = new JoinLobbyByIdOptions();
+                options.Player = new Player(AuthenticationService.Instance.PlayerId);
+                options.Player.Data = new Dictionary<string, PlayerDataObject>()
+                {
+                    { "PlayerLevel", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "8") }
+                };
+
+                Lobby lobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobbyID, options);
                 Debug.Log("Joined Lobby With ID : " + lobbyID);
                 Debug.LogWarning("Lobby Code : " + lobby.LobbyCode);
+
+                DontDestroyOnLoad(this);
+                GetComponent<CurrentLobby>().currentLobby = lobby;
+                LobbyStatic.LogPlayersInLobby(lobby);
+
+                LobbyStatic.LoadLobbyRoom();
             }
             catch (LobbyServiceException e)
             {
@@ -58,6 +75,11 @@ namespace LobbyScripts
                 Lobby lobby = await LobbyService.Instance.QuickJoinLobbyAsync();
                 Debug.Log("Joined Lobby With Quick Join : " + lobby.Id);
                 Debug.LogWarning("Lobby Code : " + lobby.LobbyCode);
+
+                DontDestroyOnLoad(this);
+                GetComponent<CurrentLobby>().currentLobby = lobby;
+
+                LobbyStatic.LoadLobbyRoom();
             }
             catch (LobbyServiceException e)
             {
