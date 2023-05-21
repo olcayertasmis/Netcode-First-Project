@@ -23,7 +23,8 @@ namespace LobbyScripts
                 options.Player = new Player(AuthenticationService.Instance.PlayerId);
                 options.Player.Data = new Dictionary<string, PlayerDataObject>()
                 {
-                    { "PlayerLevel", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "8") }
+                    { "PlayerLevel", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "8") },
+                    { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "PlayerJoined") }
                 };
 
                 Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(code, options);
@@ -49,7 +50,8 @@ namespace LobbyScripts
                 options.Player = new Player(AuthenticationService.Instance.PlayerId);
                 options.Player.Data = new Dictionary<string, PlayerDataObject>()
                 {
-                    { "PlayerLevel", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "8") }
+                    { "PlayerLevel", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "8") },
+                    { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "PlayerJoined") }
                 };
 
                 Lobby lobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobbyID, options);

@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
+using Unity.Netcode;
+using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
@@ -16,6 +19,8 @@ namespace LobbyScripts
         [SerializeField] private TextMeshProUGUI lobbyName;
         [SerializeField] private TextMeshProUGUI lobbyCode;
         [SerializeField] private TextMeshProUGUI gameMode;
+        [SerializeField] private TMP_InputField newLobbyName;
+        [SerializeField] private TMP_InputField newPlayerName;
 
         [Header("Player Info")]
         [SerializeField] private GameObject playerInfoPanel;
@@ -27,6 +32,9 @@ namespace LobbyScripts
         {
             _currentLobby = GameObject.Find("Lobby Manager").GetComponent<CurrentLobby>();
 
+            if (_currentLobby.currentLobby.HostId == AuthenticationService.Instance.PlayerId) newLobbyName.gameObject.SetActive(true);
+            else newLobbyName.gameObject.SetActive(false);
+
             PopulateUIElements();
 
             _lobbyId = _currentLobby.currentLobby.Id;
@@ -35,13 +43,19 @@ namespace LobbyScripts
             LobbyStatic.LogPlayersInLobby(_currentLobby.currentLobby);
         }
 
+        private void Update()
+        {
+            Debug.Log(AuthenticationService.Instance.PlayerId);
+        }
+
         private void PopulateUIElements()
         {
             lobbyName.text = "Lobby Name : " + _currentLobby.currentLobby.Name;
             lobbyCode.text = "Lobby Code : " + _currentLobby.currentLobby.LobbyCode;
             gameMode.text = "Game Mode : " + _currentLobby.currentLobby.Data["GameMode"].Value;
 
-            foreach (Player player in _currentLobby.currentLobby.Players)
+            ClearContainer();
+            foreach (var player in _currentLobby.currentLobby.Players)
             {
                 CreatePlayerInfoCard(player);
             }
@@ -69,6 +83,52 @@ namespace LobbyScripts
                 {
                     Destroy(VARIABLE.gameObject);
                 }
+            }
+        }
+
+        //Button Events
+
+        public async void ChangeLobbyFeature()
+        {
+            string _newLobbyName = null;
+            string playerName = null;
+
+            if (newLobbyName.text != null)
+            {
+                _newLobbyName = newLobbyName.text;
+            }
+
+            if (newPlayerName.text != null)
+            {
+                playerName = newPlayerName.text;
+            }
+
+            try
+            {
+                if (_newLobbyName != null)
+                {
+                    if (_currentLobby.currentLobby.HostId == AuthenticationService.Instance.PlayerId)
+                    {
+                        UpdateLobbyOptions lobbyOptions = new UpdateLobbyOptions();
+                        lobbyOptions.Name = _newLobbyName;
+                        _currentLobby.currentLobby = await Lobbies.Instance.UpdateLobbyAsync(_lobbyId, lobbyOptions);
+                    }
+                }
+
+                if (playerName != null)
+                {
+                    UpdatePlayerOptions playerOptions = new UpdatePlayerOptions();
+                    playerOptions.Data = new Dictionary<string, PlayerDataObject>()
+                    {
+                        { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) }
+                    };
+
+                    await LobbyService.Instance.UpdatePlayerAsync(_lobbyId, AuthenticationService.Instance.PlayerId, playerOptions);
+                }
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.LogError(e);
             }
         }
     }

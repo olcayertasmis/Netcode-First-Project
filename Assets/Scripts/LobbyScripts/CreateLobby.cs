@@ -29,7 +29,8 @@ namespace LobbyScripts
             options.Player = new Player(AuthenticationService.Instance.PlayerId);
             options.Player.Data = new Dictionary<string, PlayerDataObject>()
             {
-                { "PlayerLevel", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "5") }
+                { "PlayerLevel", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "5") },
+                {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "PlayerHost")}
             };
 
             // Lobby Data
